@@ -18,7 +18,7 @@ export const SearchInput = () => {
 
 export const BaseInput = (props) => {
     return (
-        <label className={`block text-sm ${props.className}`}>
+        <label className={`block text-sm ${props.className}`} id={props.id}>
             <span className="text-gray-700 capitalize">{props.name}</span>
             <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
                 className="block w-full mt-1 text-sm bg-gray-200 p-2 focus:border-blue-400 focus:shadow-outline-gray rounded-md form-input"
