@@ -15,7 +15,7 @@ import { BasicButton } from '../components/BaseButton'
 import { BaseInput } from '../components/BaseInput';
 
 // api
-import { GetUser, DeleteUser, CreateUser } from '../api/userApi';
+import { GetUser, DeleteUser, CreateUser, UpdateUser } from '../api/userApi';
 
 const Dashboard = () => {
 
@@ -25,20 +25,27 @@ const Dashboard = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [idUser, setIdUser] = useState(null)
 
-  const auth = (token) => {
+  const auth = () => {
+    const userToken = localStorage.getItem('user')
     return {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${userToken}`
       }
     }
   }
 
+  const getId = (selector) => {
+    return document.getElementById(selector)
+  }
 
   const getAllUser = async () => {
     try {
-      const userToken = localStorage.getItem('user')
-      const response = await GetUser(auth(userToken))
+      // const userToken = localStorage.getItem('user')
+      const response = await GetUser(auth())
 
       setUserList(response.data)
     } catch (error) {
@@ -49,8 +56,8 @@ const Dashboard = () => {
   const deleteUser = async (id) => {
     try {
       openModal('modal-loading')
-      const userToken = localStorage.getItem('user')
-      await DeleteUser(id, auth(userToken))
+      // const userToken = localStorage.getItem('user')
+      await DeleteUser(id, auth())
       setnul(nul+1)
 
       closeModal('modal-loading')
@@ -64,6 +71,11 @@ const Dashboard = () => {
 
   const createNew = () => {
     openModal('upsert')
+    getId('btnCreate').classList.remove('hidden')
+    getId('btnUpdate').classList.add('hidden')
+    getId('password').classList.remove('hidden')
+    getId('oldPassword').classList.add('hidden')
+    getId('newPassword').classList.add('hidden')
     setUsername('')
     setPassword('')
     setConfirmPassword('')
@@ -78,20 +90,22 @@ const Dashboard = () => {
   const handleInput = (e) => {
     const { name, value } = e.target;
     switch (name) {
-      case 'username':
-        setUsername(value);
+      case 'username': setUsername(value);
         break;
-      case 'password':
-        setPassword(value);
+      case 'password': setPassword(value);
         break;
-      case 'confirm password':
-        setConfirmPassword(value);
+      case 'confirm password': setConfirmPassword(value);
         break;
+      case 'old password': setOldPassword(value);
+        break;
+      case 'new password': setNewPassword(value);
+        break;  
       default:
         break;
     }
   };
 
+  // create in modal
   const createUser = async () => {
     try {
       if (username === '' || password === '' || confirmPassword === '') {
@@ -101,17 +115,16 @@ const Dashboard = () => {
           AlertError('password must be the same')
           setConfirmPassword('')
         } else {
-          console.log('semua input terpenuhi')
           closeModal('upsert')
           openModal('modal-loading')
 
-          const response = await CreateUser({
+          // const userToken = localStorage.getItem('user')
+          await CreateUser({
             username: username,
             password: password
-          })
+          }, auth())
 
-          console.log(response, '<-- berhasil create user')
-
+          setnul(nul+1)
           closeModal('modal-loading')
           getAllUser()
           AlertSuccess('User has been created')
@@ -120,6 +133,56 @@ const Dashboard = () => {
     } catch (error) {
       closeModal('modal-loading')
       AlertError(error.message)
+    }
+  }
+
+  const updateUser = (user) => {
+    openModal('upsert')
+    getId('btnCreate').classList.add('hidden')
+    getId('btnUpdate').classList.remove('hidden')
+    getId('password').classList.add('hidden')
+    getId('oldPassword').classList.remove('hidden')
+    getId('newPassword').classList.remove('hidden')
+    setIdUser(user.id)
+    setUsername(user.username)
+    setPassword(user.password)
+    setOldPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+  }
+
+  // update in modal
+  const confirmUpdateUser = async () => {
+    try {
+      if (username === '' || oldPassword === '' || newPassword === '' || confirmPassword === '') {
+        AlertError('Input cannot be empty')
+      } else {
+        if (newPassword != confirmPassword) {
+          AlertError('password must be the same')
+          setConfirmPassword('')
+        } else {
+          if (password != oldPassword) {
+            AlertError('old password does not match')
+          } else {
+            closeModal('upsert')
+            openModal('modal-loading')
+  
+            await UpdateUser({
+              id: idUser,
+              username: username,
+              old_password: oldPassword,
+              new_password: newPassword
+            }, auth())
+  
+            closeModal('modal-loading')
+            AlertSuccess('User has been updated')
+          }
+        }
+        getAllUser()
+      }
+    } catch (error) {
+      AlertError()
+      console.log(error, '<-- error update user')
     }
   }
 
@@ -154,7 +217,7 @@ const Dashboard = () => {
                 <tr>
                   <th></th>
                   <th>Username</th>
-                  <th>Fullname</th>
+                  <th>Password</th>
                   <th>Email</th>
                   <th>Created</th>
                   <th></th>
@@ -165,14 +228,14 @@ const Dashboard = () => {
                   <tr key={user.id}>
                     <td className="image-cell">{index + 1}</td>
                     <td>{user.username}</td>
-                    <td>-</td>
+                    <td>{user.password}</td>
                     <td>-</td>
                     <td>
                       <small>{user.createdAt}</small>
                     </td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
-                        <button className="button small blue --jb-modal" type="button">
+                        <button onClick={() => updateUser(user)} className="button small blue --jb-modal" type="button">
                           <span className="icon"><i className="mdi mdi-pencil mdi-18px"></i></span>
                         </button>
                         <button onClick={() => deleteUser(user.id)} className="button small red --jb-modal" type="button">
@@ -203,11 +266,14 @@ const Dashboard = () => {
       {/* ===== upsert modal ===== */}
       <BaseModal id='upsert' title='Create New User'>
         <BaseInput value={username} onChange={handleInput} name='username' className='mb-5' />
-        <BaseInput value={password} onChange={handleInput} name='password' type='password' className='mb-5' />
+        <BaseInput value={password} onChange={handleInput} name='password' type='password'id='password' className='mb-5' />
+        <BaseInput value={oldPassword} onChange={handleInput} name='old password' type='password' id='oldPassword' className='mb-5 hidden' />
+        <BaseInput value={newPassword} onChange={handleInput} name='new password' type='password' id='newPassword' className='mb-5 hidden' />
         <BaseInput value={confirmPassword} onChange={handleInput} name='confirm password' type='password' className='mb-5' />
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
-          <BasicButton onClick={createUser} title='Create'/>
+          <BasicButton onClick={createUser} id='btnCreate' title='Create'/>
+          <BasicButton onClick={confirmUpdateUser} id='btnUpdate' title='Update'/>
         </div>
       </BaseModal>
 

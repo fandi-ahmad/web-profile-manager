@@ -24,3 +24,11 @@ export const CreateUser = (data, auth) => {
         throw error;
     });
 }
+
+export const  UpdateUser = (data, auth) => {
+    return axios.put(`${apiUrl}/update`, data, auth)
+    .then(response => response.data)
+    .catch(error => {
+        throw error;
+    });
+}
