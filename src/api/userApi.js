@@ -16,3 +16,11 @@ export const DeleteUser = (id, auth) => {
         throw error;
     });
 }
+
+export const CreateUser = (data, auth) => {
+    return axios.post(apiUrl, data, auth)
+    .then(response => response.data)
+    .catch(error => {
+        throw error;
+    });
+}

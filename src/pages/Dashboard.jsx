@@ -15,7 +15,7 @@ import { BasicButton } from '../components/BaseButton'
 import { BaseInput } from '../components/BaseInput';
 
 // api
-import { GetUser, DeleteUser } from '../api/userApi';
+import { GetUser, DeleteUser, CreateUser } from '../api/userApi';
 
 const Dashboard = () => {
 
@@ -57,12 +57,16 @@ const Dashboard = () => {
       AlertSuccess()
       return getAllUser()
     } catch (error) {
-      console.log(error, '<-- error delete user');
+      closeModal('modal-loading')
+      AlertError(error.message)
     }
   }
 
   const createNew = () => {
     openModal('upsert')
+    setUsername('')
+    setPassword('')
+    setConfirmPassword('')
   }
 
   const cek = () => {
@@ -95,12 +99,27 @@ const Dashboard = () => {
       } else {
         if (password != confirmPassword) {
           AlertError('password must be the same')
+          setConfirmPassword('')
         } else {
           console.log('semua input terpenuhi')
+          closeModal('upsert')
+          openModal('modal-loading')
+
+          const response = await CreateUser({
+            username: username,
+            password: password
+          })
+
+          console.log(response, '<-- berhasil create user')
+
+          closeModal('modal-loading')
+          getAllUser()
+          AlertSuccess('User has been created')
         }
       }
     } catch (error) {
-      
+      closeModal('modal-loading')
+      AlertError(error.message)
     }
   }
 
@@ -189,7 +208,6 @@ const Dashboard = () => {
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
           <BasicButton onClick={createUser} title='Create'/>
-          <BasicButton onClick={cek} title='cek'/>
         </div>
       </BaseModal>
 
