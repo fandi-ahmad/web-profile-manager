@@ -25,10 +25,16 @@ export const CreateUser = (data, auth) => {
     });
 }
 
-export const  UpdateUser = (data, auth) => {
+export const UpdateUser = (data, auth) => {
     return axios.put(`${apiUrl}/update`, data, auth)
     .then(response => response.data)
     .catch(error => {
         throw error;
     });
+}
+
+export const LoginUser = (data) => {
+    return axios.post(`${apiUrl}/login`, data)
+    .then(response => response.data)
+    .catch(error => error.response.data)
 }
