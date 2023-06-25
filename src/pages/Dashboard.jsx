@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import jwtDecode from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
 import { createGlobalState } from 'react-hooks-global-state';
 import { useGlobalState } from '../state/state';
 
@@ -19,7 +16,6 @@ import { GetUser, DeleteUser, CreateUser, UpdateUser } from '../api/userApi';
 
 const Dashboard = () => {
 
-  const [userActive, setUserActive] = useGlobalState('userActive')
   const [userList, setUserList] = useState([])
   const [nul, setnul] = useState(0)
   const [username, setUsername] = useState('')
@@ -29,23 +25,13 @@ const Dashboard = () => {
   const [newPassword, setNewPassword] = useState('')
   const [idUser, setIdUser] = useState(null)
 
-  const auth = () => {
-    const userToken = localStorage.getItem('user')
-    return {
-      headers: {
-        Authorization: `Bearer ${userToken}`
-      }
-    }
-  }
-
   const getId = (selector) => {
     return document.getElementById(selector)
   }
 
   const getAllUser = async () => {
     try {
-      // const userToken = localStorage.getItem('user')
-      const response = await GetUser(auth())
+      const response = await GetUser()
 
       setUserList(response.data)
     } catch (error) {
@@ -56,8 +42,7 @@ const Dashboard = () => {
   const deleteUser = async (id) => {
     try {
       openModal('modal-loading')
-      // const userToken = localStorage.getItem('user')
-      await DeleteUser(id, auth())
+      await DeleteUser(id)
       setnul(nul+1)
 
       closeModal('modal-loading')
@@ -118,11 +103,10 @@ const Dashboard = () => {
           closeModal('upsert')
           openModal('modal-loading')
 
-          // const userToken = localStorage.getItem('user')
           await CreateUser({
             username: username,
             password: password
-          }, auth())
+          })
 
           setnul(nul+1)
           closeModal('modal-loading')
@@ -172,7 +156,7 @@ const Dashboard = () => {
               username: username,
               old_password: oldPassword,
               new_password: newPassword
-            }, auth())
+            })
   
             closeModal('modal-loading')
             AlertSuccess('User has been updated')

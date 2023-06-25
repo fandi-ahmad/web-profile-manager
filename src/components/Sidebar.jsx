@@ -1,6 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
+import { GetUser } from '../api/userApi'
 
 const Sidebar = () => {
+
+    const navigate = useNavigate()
+
+    const checkToken = async () => {
+        try {
+            const response = await GetUser()
+            if (response.status == 403) {
+                navigate('/login')
+            }
+        } catch (error) {
+        }
+    }
+
+    useEffect(() => {
+        checkToken()
+    }, [])
+
     return (
         <aside className="aside is-placed-left is-expanded">
             <div className="aside-tools">

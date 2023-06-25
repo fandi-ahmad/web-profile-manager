@@ -1,32 +1,32 @@
 import axios from "axios";
+import Auth from "./auth";
+
 const apiUrl = 'http://localhost:8000/api/v1/user'
 
-export const GetUser = (auth) => {
-    return axios.get(apiUrl, auth)
+export const GetUser = () => {
+    return axios.get(apiUrl, Auth())
+    .then(response => response.data)
+    .catch(error => error.response);
+}
+
+export const DeleteUser = (id) => {
+    return axios.delete(`${apiUrl}/delete/${id}`, Auth())
     .then(response => response.data)
     .catch(error => {
         throw error;
     });
 }
 
-export const DeleteUser = (id, auth) => {
-    return axios.delete(`${apiUrl}/delete/${id}`, auth)
+export const CreateUser = (data) => {
+    return axios.post(apiUrl, data, Auth())
     .then(response => response.data)
     .catch(error => {
         throw error;
     });
 }
 
-export const CreateUser = (data, auth) => {
-    return axios.post(apiUrl, data, auth)
-    .then(response => response.data)
-    .catch(error => {
-        throw error;
-    });
-}
-
-export const UpdateUser = (data, auth) => {
-    return axios.put(`${apiUrl}/update`, data, auth)
+export const UpdateUser = (data) => {
+    return axios.put(`${apiUrl}/update`, data, Auth())
     .then(response => response.data)
     .catch(error => {
         throw error;
