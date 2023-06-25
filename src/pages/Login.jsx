@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalState } from '../state/state';
 
 // component
-import { BaseInput, InputIcon } from '../components/BaseInput'
+import { InputIcon } from '../components/BaseInput'
 import { BasicButton } from '../components/BaseButton'
 
 // api
@@ -12,11 +11,9 @@ import { AlertError, AlertSuccess } from '../components/SweetAlert';
 
 const Login = () => {
 
-  const [userActive, setUserActive] = useGlobalState('userActive')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -50,7 +47,18 @@ const Login = () => {
     } catch (error) {
       AlertError(error.message)
     }
-  }  
+  }
+
+  const checkUserToken = () => {
+    const userToken = localStorage.getItem('user')
+    if (userToken) {
+      navigate('/')
+    }
+  }
+
+  useEffect(() => {
+    checkUserToken()
+  }, [])
 
 
   return (
