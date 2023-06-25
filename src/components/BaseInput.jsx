@@ -19,7 +19,7 @@ export const SearchInput = () => {
 export const BaseInput = (props) => {
     return (
         <label className={`block text-sm ${props.className}`} id={props.id}>
-            <span className="text-gray-700 capitalize">{props.name}</span>
+            <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.name}</span>
             <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
                 className="block w-full mt-1 text-sm bg-gray-200 p-2 focus:border-blue-400 focus:shadow-outline-gray rounded-md form-input"
             />
@@ -29,13 +29,13 @@ export const BaseInput = (props) => {
 
 export const InputIcon = (props) => {
     return (
-        <label className="block text-sm">
-            <span className="text-gray-700 capitalize">{props.name}</span>
+        <label className={`block text-sm ${props.className}`} id={props.id}>
+            <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.name}</span>
             <div className="relative text-gray-500">
-                <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
-                    className="block w-full pl-10 mt-1 text-sm text-black focus:border-blue-400 focus:shadow-outline-gray  form-input"
-                />
                 <div className="absolute inset-y-0 flex items-center ml-3 pointer-events-none">{props.icon}</div>
+                <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
+                    className="block w-full pl-9 mt-1 text-sm bg-gray-200 p-2 focus:border-blue-400 focus:shadow-outline-gray rounded-md form-input"
+                />
             </div>
         </label>
     )
