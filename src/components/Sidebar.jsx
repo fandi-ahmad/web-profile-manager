@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from "react-router-dom";
 import { GetUser } from '../api/userApi'
 import { AlertConfirm } from './SweetAlert'
 
 const Sidebar = () => {
 
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const setActivePage = (id) => {
+        document.getElementById(id).classList.add('active')
+    }
 
     const checkToken = async () => {
         try {
@@ -32,6 +37,14 @@ const Sidebar = () => {
         checkToken()
     }, [])
 
+    useEffect(() => {
+        if (location.pathname === '/') {
+            setActivePage('dashboard')
+        } else if (location.pathname === '/service') {
+            setActivePage('service')
+        }
+    }, [location]);
+
     return (
         <aside className="aside is-placed-left is-expanded">
             <div className='h-5/6'>
@@ -43,25 +56,25 @@ const Sidebar = () => {
                 <div className="menu is-menu-main">
                     <p className="menu-label">Menu</p>
                     <ul className="menu-list">
-                        <li className="active">
+                        <li id='dashboard'>
                             <a onClick={() => navigate('/')}>
                                 <span className="icon"><i className="mdi mdi-desktop-mac"></i></span>
                                 <span className="menu-item-label">Dashboard</span>
                             </a>
                         </li>
-                        <li className="--set-active-tables-html">
+                        <li id='service'>
                             <a onClick={() => navigate('/service')}>
                                 <span className="icon"><i className="mdi mdi-table"></i></span>
                                 <span className="menu-item-label">Service</span>
                             </a>
                         </li>
-                        <li className="--set-active-forms-html">
+                        <li id='setup'>
                             <a>
                                 <span className="icon"><i className="mdi mdi-tools"></i></span>
                                 <span className="menu-item-label">Setup</span>
                             </a>
                         </li>
-                        <li className="--set-active-profile-html">
+                        <li id='profile'>
                             <a>
                                 <span className="icon"><i className="mdi mdi-account-circle"></i></span>
                                 <span className="menu-item-label">Profile</span>
