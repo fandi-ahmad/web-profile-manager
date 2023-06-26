@@ -17,7 +17,7 @@ export const BaseModal = (props) => {
         <>
             <input type="checkbox" id={props.id} className="modal-toggle" />
             <div className="modal">
-                <div className="modal-box w-96 max-w-5xl bg-white text-gray-700">
+                <div className={`${props.classSize || 'w-96'} modal-box max-w-5xl bg-white text-gray-700`}>
                     <h3 className="font-bold text-2xl capitalize mb-4">{props.title}</h3>
                     {props.children}
                 </div>

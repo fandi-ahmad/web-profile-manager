@@ -23,7 +23,7 @@ const Sidebar = () => {
             title: 'Logout?',
             preConfirm: () => {
                 localStorage.removeItem("user");
-                navigate('login')
+                navigate('/login')
             }
         })
     }
@@ -44,25 +44,25 @@ const Sidebar = () => {
                     <p className="menu-label">Menu</p>
                     <ul className="menu-list">
                         <li className="active">
-                            <a href="">
+                            <a onClick={() => navigate('/')}>
                                 <span className="icon"><i className="mdi mdi-desktop-mac"></i></span>
                                 <span className="menu-item-label">Dashboard</span>
                             </a>
                         </li>
                         <li className="--set-active-tables-html">
-                            <a href="">
+                            <a onClick={() => navigate('/service')}>
                                 <span className="icon"><i className="mdi mdi-table"></i></span>
-                                <span className="menu-item-label">Tables</span>
+                                <span className="menu-item-label">Service</span>
                             </a>
                         </li>
                         <li className="--set-active-forms-html">
-                            <a href="">
-                                <span className="icon"><i className="mdi mdi-square-edit-outline"></i></span>
-                                <span className="menu-item-label">Forms</span>
+                            <a>
+                                <span className="icon"><i className="mdi mdi-tools"></i></span>
+                                <span className="menu-item-label">Setup</span>
                             </a>
                         </li>
                         <li className="--set-active-profile-html">
-                            <a href="">
+                            <a>
                                 <span className="icon"><i className="mdi mdi-account-circle"></i></span>
                                 <span className="menu-item-label">Profile</span>
                             </a>
@@ -73,7 +73,7 @@ const Sidebar = () => {
             <div className='flex justify-center'>
                 <ul onClick={logoutUser} className="bg-slate-700 hover:bg-slate-600 cursor-pointer p-2 rounded-md w-full mx-2 text-center">
                     <li className="--set-active-profile-htm">
-                        <a href="" className='text-white'>
+                        <a className='text-white'>
                             <span className="icon"><i className="mdi mdi-logout"></i></span>
                             <span className="menu-item-label">Logout</span>
                         </a>

@@ -43,7 +43,7 @@ export const InputIcon = (props) => {
 
 export const InputFile = (props) => {
     return (
-        <label className="block text-sm">
+        <label className={`block text-sm ${props.className}`}>
             <span className="text-gray-700 capitalize">{props.name}</span>
             <input type="file" onChange={props.onChange} name={props.name} id={props.id} accept={props.accpet} placeholder={props.placeholder || 'Select file'}
                 className="block w-full mt-1 text-sm focus:border-blue-400 focus:shadow-outline-gray form-input" />
@@ -53,11 +53,11 @@ export const InputFile = (props) => {
 
 export const InputTextArea = (props) => {
     return (
-        <label className="block text-sm">
+        <label className={`block text-sm ${props.className}`}>
             <span className="text-gray-700 capitalize">{props.title || props.name}</span>
             <textarea value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
-                className="block w-full mt-1 text-sm form-textarea focus:border-blue-400 focus:shadow-outline-gray resize-none"
-                rows="10"
+                className="block w-full mt-1 text-sm bg-gray-200 form-textarea focus:border-blue-400 focus:shadow-outline-gray resize-none"
+                rows={props.rows || '8'}
             ></textarea>
         </label>
     )
