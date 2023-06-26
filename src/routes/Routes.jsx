@@ -1,8 +1,8 @@
 import { React, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from '../pages/Login';
-import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
+import Service from '../pages/Service';
 
 export const RoutesTemplate = () => {
 
@@ -14,8 +14,8 @@ export const RoutesTemplate = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login/>} />
-                <Route path="/register" element={<Register/>} />
                 <Route path="/" element={<Dashboard/>} />
+                <Route path="/service" element={<Service/>} />
             </Routes>
         </BrowserRouter>
     )
