@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [idUser, setIdUser] = useState(null)
+  const [optText, setOptText] = useState('create')
 
   const getId = (selector) => {
     return document.getElementById(selector)
@@ -56,6 +57,7 @@ const Dashboard = () => {
 
   const createNew = () => {
     openModal('upsert')
+    setOptText('create new')
     getId('btnCreate').classList.remove('hidden')
     getId('btnUpdate').classList.add('hidden')
     getId('password').classList.remove('hidden')
@@ -122,6 +124,7 @@ const Dashboard = () => {
 
   const updateUser = (user) => {
     openModal('upsert')
+    setOptText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     getId('password').classList.add('hidden')
@@ -248,7 +251,7 @@ const Dashboard = () => {
       </section>
 
       {/* ===== upsert modal ===== */}
-      <BaseModal id='upsert' title='Create New User'>
+      <BaseModal id='upsert' title={`${optText} user`}>
         <BaseInput value={username} onChange={handleInput} name='username' className='mb-5' />
         <BaseInput value={password} onChange={handleInput} name='password' type='password'id='password' className='mb-5' />
         <BaseInput value={oldPassword} onChange={handleInput} name='old password' type='password' id='oldPassword' className='mb-5 hidden' />
