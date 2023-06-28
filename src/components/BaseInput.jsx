@@ -56,7 +56,7 @@ export const InputTextArea = (props) => {
         <label className={`block text-sm ${props.className}`}>
             <span className="text-gray-700 capitalize">{props.title || props.name}</span>
             <textarea value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
-                className="block w-full mt-1 text-sm bg-gray-200 form-textarea focus:border-blue-400 focus:shadow-outline-gray resize-none"
+                className="block w-full mt-1 text-sm bg-gray-200 p-2 form-textarea focus:border-blue-400 focus:shadow-outline-gray rounded-md resize-none"
                 rows={props.rows || '8'}
             ></textarea>
         </label>
