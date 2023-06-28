@@ -32,3 +32,9 @@ export const DeleteService = (id) => {
     .then(response => response.data)
     .catch(error => error.response);
 }
+
+export const UpdateService = (data) => {
+    return axios.put(apiUrl+'/update', data, config())
+    .then(response => response.data)
+    .catch(error => error.response);
+}

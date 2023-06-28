@@ -6,10 +6,10 @@ import TitleBar from '../components/TitleBar'
 import { BasicButton } from '../components/BaseButton'
 import { BaseInput, InputTextArea, InputFile } from '../components/BaseInput'
 import { BaseModal, ModalLoading, openModal, closeModal } from '../components/BaseModal'
-import { AlertSuccess, AlertConfirm } from '../components/SweetAlert'
+import { AlertSuccess, AlertConfirm, AlertError } from '../components/SweetAlert'
 
 // api
-import { GetService, CreateService, DeleteService } from '../api/serviceApi'
+import { GetService, CreateService, DeleteService, UpdateService } from '../api/serviceApi'
 
 const Service = () => {
 
@@ -19,6 +19,12 @@ const Service = () => {
   const [description, setDescription] = useState('')
   const [image, setImage] = useState(null)
   const [imageUrl, setImageUrl] = useState('')
+  const [idService, setIdService] = useState(null)
+  const [optText, setOptText] = useState('create')
+
+  const getId = (selector) => {
+    return document.getElementById(selector)
+  }
 
   const getAllService = async () => {
     try {
@@ -49,25 +55,32 @@ const Service = () => {
 
   const createNew = () => {
     openModal('upsert')
+    setOptText('create')
     setName('')
     setDescription('')
     setImage(nul)
     setImageUrl('')
+    getId('btnCreate').classList.remove('hidden')
+    getId('btnUpdate').classList.add('hidden')
   }
 
   const createNewService = async () => {
-    const formData = new FormData();
-    formData.append('name', name)
-    formData.append('description', description)
-    formData.append('image', image);
     try {
-      closeModal('upsert')
-      openModal('modal-loading')
-      await CreateService(formData)
-
-      getAllService()
-      closeModal('modal-loading')
-      AlertSuccess('Service has been created')
+      if (name === '' || description === '' || image === 0) {
+        AlertError('Input cannot be empty')
+      } else {
+        const formData = new FormData();
+        formData.append('name', name)
+        formData.append('description', description)
+        formData.append('image', image);
+        closeModal('upsert')
+        openModal('modal-loading')
+        await CreateService(formData)
+  
+        getAllService()
+        closeModal('modal-loading')
+        AlertSuccess('Service has been created')
+      }
     } catch (error) {
       console.log(error);
     }
@@ -95,11 +108,32 @@ const Service = () => {
     }
   }
 
-  const cek = () => {
-    console.log(name)
-    console.log(description)
-    console.log(image, '<-- image');
-    // console.log(imageUrl, '<-- image URL');
+  const openUpdateService = (service) => {
+    openModal('upsert')
+    setOptText('update')
+    setIdService(service.id)
+    setName(service.name)
+    setDescription(service.description)
+    setImage(service.image)
+    setImageUrl(`http://localhost:8000/${service.image}`)
+    getId('btnCreate').classList.add('hidden')
+    getId('btnUpdate').classList.remove('hidden')
+    console.log(service)
+  }
+
+  const updateService = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('id', idService)
+      formData.append('name', name)
+      formData.append('description', description)
+      formData.append('image', image);
+
+      const respone = await UpdateService(formData)
+      console.log(respone)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -142,7 +176,7 @@ const Service = () => {
                     </td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
-                        <button className="button small blue --jb-modal" type="button">
+                        <button onClick={() => openUpdateService(service)} className="button small blue --jb-modal" type="button">
                           <span className="icon"><i className="mdi mdi-pencil mdi-18px"></i></span>
                         </button>
                         <button onClick={() => deleteService(service.id)} className="button small red --jb-modal" type="button">
@@ -159,16 +193,21 @@ const Service = () => {
       </section>
 
       {/* ===== upsert modal ===== */}
-      <BaseModal id='upsert' title='Create New Service' classSize='w-screen'>
+      <BaseModal id='upsert' title={`${optText} service`} classSize='w-screen'>
           <div className='grid gap-4 md:grid-cols-2'>
-            <BaseInput value={name} onChange={handleInput} name='name' className='mb-5' />
-            <InputFile value={image} onChange={handleInputFile} name='image' className='mb-5' />
+            <div>
+              <BaseInput value={name} onChange={handleInput} name='name' className='mb-5' />
+              <div className='mb-5'>
+                <InputFile value={image} onChange={handleInputFile} name='image' />
+                {imageUrl && <img src={imageUrl} alt="preview" className='h-40 rounded-md mt-4' />}
+              </div>
+            </div>
+            <InputTextArea value={description} onChange={handleInput} name='description' rows='12' className='mb-5' />
           </div>
-          <InputTextArea value={description} onChange={handleInput} name='description' className='mb-5' />
           <div className="modal-action pt-4">
             <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
-            <BasicButton onClick={createNewService} title='Create'/>
-            <BasicButton onClick={cek} title='cek' />
+            <BasicButton onClick={createNewService} id='btnCreate' title='Create'/>
+            <BasicButton onClick={updateService} id='btnUpdate' title='Update'/>
           </div>
       </BaseModal>
 
