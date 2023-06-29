@@ -42,6 +42,8 @@ const Sidebar = () => {
             setActivePage('dashboard')
         } else if (location.pathname === '/service') {
             setActivePage('service')
+        } else if (location.pathname === '/setup') {
+            setActivePage('setup')
         }
     }, [location]);
 
@@ -69,7 +71,7 @@ const Sidebar = () => {
                             </a>
                         </li>
                         <li id='setup'>
-                            <a>
+                            <a onClick={() => navigate('/setup')}>
                                 <span className="icon"><i className="mdi mdi-tools"></i></span>
                                 <span className="menu-item-label">Setup</span>
                             </a>
