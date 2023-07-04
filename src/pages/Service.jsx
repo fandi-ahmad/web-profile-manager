@@ -31,7 +31,7 @@ const Service = () => {
       const respone = await GetService()
       setServiceList(respone.data)
     } catch (error) {
-      console.log(error)
+
     }
   }
 
@@ -82,7 +82,7 @@ const Service = () => {
         AlertSuccess('Service has been created')
       }
     } catch (error) {
-      console.log(error);
+      AlertError()
     }
   }
 
@@ -104,7 +104,7 @@ const Service = () => {
       AlertSuccess(respone.message)
       getAllService()
     } catch (error) {
-      console.log(error);
+      AlertError()
     }
   }
 
@@ -118,10 +118,10 @@ const Service = () => {
     setImageUrl(`http://localhost:8000/${service.image}`)
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
-    console.log(service)
   }
 
   const updateService = async () => {
+    openModal('modal-loading')
     try {
       const formData = new FormData();
       formData.append('id', idService)
@@ -130,10 +130,13 @@ const Service = () => {
       formData.append('image', image);
 
       const respone = await UpdateService(formData)
-      console.log(respone)
+      closeModal('upsert')
+      AlertSuccess(respone.message)
+      getAllService()
     } catch (error) {
-      console.log(error)
+      AlertError()
     }
+    closeModal('modal-loading')
   }
 
   const handleDownloadImage = async (service) => {
@@ -217,7 +220,8 @@ const Service = () => {
             <div>
               <BaseInput value={name} onChange={handleInput} name='name' className='mb-5' />
               <div className='mb-5'>
-                <InputFile value={image} onChange={handleInputFile} name='image' />
+                <BasicButton onClick={() => getId('imageInput').click()} title='upload image' icon='mdi-upload' iconShow='block' className='btn-sm blue p-1 px-2' />
+                <InputFile value={image} onChange={handleInputFile} name='image' id='imageInput' className='hidden' />
                 {imageUrl && <img src={imageUrl} alt="preview" className='h-40 rounded-md mt-4' />}
               </div>
             </div>
