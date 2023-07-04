@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { utils, write } from 'xlsx'
 
 // component
 import Sidebar from '../components/Sidebar'
@@ -155,6 +156,19 @@ const Service = () => {
     closeModal('modal-loading')
   }
 
+  const downloadData = () => {
+    const worksheet = utils.json_to_sheet(serviceList);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = write(workbook, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const excelUrl = URL.createObjectURL(excelData);
+    const link = document.createElement('a');
+    link.href = excelUrl;
+    link.download = 'data.xlsx';
+    link.click();
+  }
+
   useEffect(() => {
     getAllService()
   }, [])
@@ -178,7 +192,9 @@ const Service = () => {
                   <th>Description</th>
                   <th>Image</th>
                   <th>Created</th>
-                  <th></th>
+                  <th className='buttons right nowrap'>
+                    <BasicButton onClick={downloadData} title='Download' icon='mdi-download mdi-18px' iconShow='block' className='btn-sm blue p-1 px-2' />
+                  </th>
                 </tr>
               </thead>
               <tbody>
