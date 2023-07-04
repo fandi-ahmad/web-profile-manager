@@ -136,6 +136,22 @@ const Service = () => {
     }
   }
 
+  const handleDownloadImage = async (service) => {
+    openModal('modal-loading')
+    try {
+      const response = await fetch(`http://localhost:8000/${service.image}`);
+      const fileBlob = await response.blob();
+      const imageUrlLink = URL.createObjectURL(fileBlob);
+      const link = document.createElement('a');
+      link.href = imageUrlLink;
+      link.download = service.image
+      link.click();
+    } catch (error) {
+      AlertError()
+    }
+    closeModal('modal-loading')
+  }
+
   useEffect(() => {
     getAllService()
   }, [])
@@ -176,6 +192,9 @@ const Service = () => {
                     </td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
+                        <button onClick={() => handleDownloadImage(service)} className="button small text-white bg-yellow-500 hover:bg-yellow-600 border-0 --jb-modal" type="button">
+                          <span className="icon"><i className="mdi mdi-download mdi-18px"></i></span>
+                        </button>
                         <button onClick={() => openUpdateService(service)} className="button small blue --jb-modal" type="button">
                           <span className="icon"><i className="mdi mdi-pencil mdi-18px"></i></span>
                         </button>
